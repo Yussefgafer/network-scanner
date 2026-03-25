@@ -14,7 +14,7 @@ Network Scanner is a fast, lightweight, and privacy-focused tool for discovering
 
 • No ads or tracking
 • No analytics or data collection
-• No internet connection required (works completely offline)
+• No external internet connection — all traffic stays on your local network
 • All scanning happens locally on your device
 • Minimal permissions requested
 • 100% open source (GPL-3.0)
