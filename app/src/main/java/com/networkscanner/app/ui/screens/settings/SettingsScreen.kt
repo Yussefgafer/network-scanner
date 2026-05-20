@@ -161,12 +161,13 @@ fun SettingsScreen(
                         )
                     }
                     SegmentSurface(index = 2, count = 4) {
+                        val githubUrl = stringResource(R.string.github_url)
                         ClickableSettingItem(
                             title = stringResource(R.string.view_on_github),
-                            summary = stringResource(R.string.github_url),
+                            summary = githubUrl,
                             onClick = {
                                 try {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.github_url)))
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
                                     context.startActivity(intent)
                                 } catch (_: ActivityNotFoundException) {
                                     // No browser available
