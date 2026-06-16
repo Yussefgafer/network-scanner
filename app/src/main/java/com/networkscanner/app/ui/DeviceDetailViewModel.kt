@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,10 +16,19 @@ import kotlinx.coroutines.launch
 class DeviceDetailViewModel(application: Application) : AndroidViewModel(application) {
 
     private val scanner = (application as NetworkScannerApp).scanner
+    private val customizationRepository = (application as NetworkScannerApp).deviceCustomizationRepository
+    private val customPortRepository = (application as NetworkScannerApp).customPortRepository
 
     // Device info
     private val _device = MutableStateFlow<Device?>(null)
     val device: StateFlow<Device?> = _device.asStateFlow()
+
+    // Device customization
+    private val _customName = MutableStateFlow<String?>(null)
+    val customName: StateFlow<String?> = _customName.asStateFlow()
+
+    private val _customIconKey = MutableStateFlow<String?>(null)
+    val customIconKey: StateFlow<String?> = _customIconKey.asStateFlow()
 
     // Deep scan state
     private val _deepScanState = MutableStateFlow<DeepScanState>(DeepScanState.Idle)
@@ -47,12 +57,31 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
         val device = devices.find { it.uniqueId == deviceId }
         _device.value = device
 
+        // Load custom name synchronously from repository
+        if (device != null) {
+            val custom = customizationRepository.getCustomization(device.uniqueId)
+            _customName.value = custom?.customName
+            _customIconKey.value = custom?.customIcon
+        }
+
         if (device != null && !hasScannedOnce && device.isOnline) {
             startDeepScan()
         }
     }
 
-    fun startDeepScan() {
+    fun saveCustomName(name: String?) {
+        val currentDevice = _device.value ?: return
+        customizationRepository.saveCustomization(currentDevice.uniqueId, name)
+        _customName.value = name?.takeIf { it.isNotBlank() }
+    }
+
+    fun saveCustomIcon(iconKey: String?) {
+        val currentDevice = _device.value ?: return
+        customizationRepository.saveCustomIcon(currentDevice.uniqueId, iconKey)
+        _customIconKey.value = iconKey
+    }
+
+    fun startDeepScan(fullScan: Boolean = false) {
         val currentDevice = _device.value ?: return
 
         deepScanJob?.cancel()
@@ -70,7 +99,20 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
 
         deepScanJob = viewModelScope.launch {
             try {
-                val result = scanner.performDeepScan(currentDevice.ipAddress)
+                val enabledCustomPorts = customPortRepository.getEnabledPorts()
+                val customServiceNames = enabledCustomPorts.associate { it.port to it.serviceName }
+                val ports = if (fullScan) {
+                    (1..65535).toList()
+                } else {
+                    (CommonPorts.TOP_PORTS + enabledCustomPorts.map { it.port }).distinct().sorted()
+                }
+
+                val result = scanner.performDeepScan(
+                    currentDevice.ipAddress,
+                    ports,
+                    customServiceNames,
+                    fullScan = fullScan
+                )
 
                 when (result.status) {
                     DeepScanStatus.COMPLETED -> {
@@ -90,6 +132,11 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
                         _deepScanState.value = DeepScanState.Idle
                     }
                 }
+            } catch (e: CancellationException) {
+                // Cancellation is expected (user tapped Cancel / scope torn down);
+                // cancelDeepScan() already moved state to Idle, so don't surface
+                // it as an error. Rethrow to honor structured concurrency.
+                throw e
             } catch (e: Exception) {
                 _deepScanState.value = DeepScanState.Error(e.message ?: "Unknown error")
             }

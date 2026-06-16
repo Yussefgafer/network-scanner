@@ -10,3 +10,6 @@ data class DeviceDetail(val deviceId: String)
 
 @Serializable
 object Settings
+
+@Serializable
+object CustomPorts

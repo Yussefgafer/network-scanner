@@ -3,14 +3,15 @@ package com.networkscanner.app.ui
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.networkscanner.app.ui.navigation.NavGraph
 import com.networkscanner.app.ui.theme.NetworkScannerTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val PREFS_NAME = "network_scanner_prefs"
@@ -56,6 +57,6 @@ class MainActivity : ComponentActivity() {
 
     private fun markPermissionsRequested() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        prefs.edit().putBoolean(KEY_PERMISSIONS_REQUESTED, true).apply()
+        prefs.edit { putBoolean(KEY_PERMISSIONS_REQUESTED, true) }
     }
 }

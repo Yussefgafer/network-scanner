@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
@@ -40,14 +40,17 @@ import com.networkscanner.app.ui.components.SegmentSurface
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToCustomPorts: () -> Unit
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
     val dynamicColors by viewModel.dynamicColors.collectAsState()
     val autoScan by viewModel.autoScan.collectAsState()
+    val language by viewModel.language.collectAsState()
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -83,7 +86,7 @@ fun SettingsScreen(
                 SettingsCategoryHeader(stringResource(R.string.pref_category_appearance))
             }
             item {
-                val appearanceCount = if (supportsDynamic) 2 else 1
+                val appearanceCount = if (supportsDynamic) 3 else 2
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -113,6 +116,13 @@ fun SettingsScreen(
                             )
                         }
                     }
+                    SegmentSurface(index = appearanceCount - 1, count = appearanceCount) {
+                        ClickableSettingItem(
+                            title = stringResource(R.string.pref_language_title),
+                            summary = currentLanguageLabel(language),
+                            onClick = { showLanguageDialog = true }
+                        )
+                    }
                 }
             }
 
@@ -121,13 +131,25 @@ fun SettingsScreen(
                 SettingsCategoryHeader(stringResource(R.string.pref_category_scanning))
             }
             item {
-                SegmentSurface(index = 0, count = 1) {
-                    SwitchSettingItem(
-                        title = stringResource(R.string.pref_auto_scan_title),
-                        summary = stringResource(R.string.pref_auto_scan_summary),
-                        checked = autoScan,
-                        onCheckedChange = { viewModel.setAutoScan(it) }
-                    )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    SegmentSurface(index = 0, count = 2) {
+                        SwitchSettingItem(
+                            title = stringResource(R.string.pref_auto_scan_title),
+                            summary = stringResource(R.string.pref_auto_scan_summary),
+                            checked = autoScan,
+                            onCheckedChange = { viewModel.setAutoScan(it) }
+                        )
+                    }
+                    SegmentSurface(index = 1, count = 2) {
+                        ClickableSettingItem(
+                            title = stringResource(R.string.pref_custom_ports_title),
+                            summary = stringResource(R.string.pref_custom_ports_summary),
+                            onClick = onNavigateToCustomPorts
+                        )
+                    }
                 }
             }
 
@@ -167,7 +189,7 @@ fun SettingsScreen(
                             summary = githubUrl,
                             onClick = {
                                 try {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+                                    val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
                                     context.startActivity(intent)
                                 } catch (_: ActivityNotFoundException) {
                                     // No browser available
@@ -193,5 +215,19 @@ fun SettingsScreen(
     }
     if (showPrivacyDialog) {
         PrivacyDialog(onDismiss = { showPrivacyDialog = false })
+    }
+    if (showLanguageDialog) {
+        LanguageDialog(
+            selectedLanguage = language,
+            onLanguageSelected = { newLanguage ->
+                showLanguageDialog = false
+                if (newLanguage != language) {
+                    // AppCompat reloads resources and recreates the activity once;
+                    // no manual recreate() needed.
+                    viewModel.setLanguage(newLanguage)
+                }
+            },
+            onDismiss = { showLanguageDialog = false }
+        )
     }
 }
