@@ -7,10 +7,10 @@
 # ============================================================================
 
 # Keep all data classes (Parcelable objects)
--keep class com.networkscanner.app.data.** { *; }
+-keep class me.jo.netscan.data.** { *; }
 
 # Keep all enums and their values
--keepclassmembers enum com.networkscanner.app.data.** { *; }
+-keepclassmembers enum me.jo.netscan.data.** { *; }
 
 # ============================================================================
 # KOTLIN
@@ -31,7 +31,7 @@
 # ============================================================================
 
 # Keep ViewBinding classes
--keep class com.networkscanner.app.databinding.** { *; }
+-keep class me.jo.netscan.databinding.** { *; }
 
 # Keep AndroidX Preference
 -keep class androidx.preference.** { *; }
@@ -59,11 +59,11 @@
 # @Serializable in the app package against R8 stripping the generated
 # serializer (which fails only at runtime, not at build time).
 -keepattributes *Annotation*, InnerClasses
--keep,includedescriptorclasses class com.networkscanner.app.**$$serializer { *; }
--keepclassmembers class com.networkscanner.app.** {
+-keep,includedescriptorclasses class me.jo.netscan.**$$serializer { *; }
+-keepclassmembers class me.jo.netscan.** {
     *** Companion;
 }
--keepclasseswithmembers class com.networkscanner.app.** {
+-keepclasseswithmembers class me.jo.netscan.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 
