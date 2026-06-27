@@ -2,14 +2,13 @@
 
 <img src="fastlane/metadata/android/en-US/images/icon_readme.svg" width="160" height="160">
 
-# Network Scanner
+# NetScan
 
 ### A fast, privacy-focused network scanner for Android
 
 <p align="center">
   <a href="https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml"><img src="https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://github.com/usamaiqb/network-scanner/releases"><img src="https://img.shields.io/github/downloads/usamaiqb/network-scanner/total?logo=github&logoColor=white&label=Downloads" alt="Downloads" /></a>
-  <a href="https://f-droid.org/packages/com.networkscanner.app/"><img src="https://img.shields.io/f-droid/v/com.networkscanner.app?logo=fdroid&logoColor=white&label=F-Droid" alt="F-Droid" /></a>
   <img src="https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white" alt="Platform" />
   <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
   <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3" /></a>
@@ -40,7 +39,7 @@ Discover and analyze devices on your local network with no ads, no tracking, and
 ### App
 - 🏷️ **Custom Devices** - Rename devices and assign your own icons for easy identification
 - 📶 **Interface Selection** - Choose which network interface to scan (Wi-Fi, Ethernet, VPN)
-- 🌍 **Multilingual** - Available in multiple languages (see [Translations](#translations))
+
 - 🎨 **Material Design 3** - Modern interface following latest design guidelines
 - 🔒 **Privacy First** - No ads, no tracking, no analytics
 - 🚀 **Lightweight** - Minimal permissions, efficient battery usage
@@ -58,9 +57,6 @@ Discover and analyze devices on your local network with no ads, no tracking, and
 
 ## Download
 
-### F-Droid
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.networkscanner.app/)
-
 ### GitHub Releases
 Download the latest APK from the [Releases](https://github.com/usamaiqb/network-scanner/releases) page.
 
@@ -71,7 +67,7 @@ Download the latest APK from the [Releases](https://github.com/usamaiqb/network-
 
 ## Permissions
 
-Network Scanner requests only essential permissions:
+NetScan requests only essential permissions:
 
 - **INTERNET** - For network communication
 - **ACCESS_NETWORK_STATE** - To check network connectivity
@@ -110,20 +106,8 @@ cd network-scanner
 4. Use the deep scan option for port scanning, or run a full port scan for all 65,535 ports
 5. Rename devices or assign custom icons to keep track of your network
 
-## Translations
-
-<!-- translations:start -->
-| Language | Progress |
-| --- | --- |
-| English | ████████████ 100% (source) |
-| العربية | ████████████ 100% |
-| Español | ████████████ 100% |
-| Русский | ███████████░ 92% |
-| Українська | ███████████░ 92% |
-<!-- translations:end -->
 
 
-Contributions to translations are welcome!
 
 ## Contributing
 
@@ -135,7 +119,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Privacy
 
-Network Scanner:
+NetScan:
 - ✅ Does NOT collect any personal data
 - ✅ Does NOT require internet connection
 - ✅ Does NOT contain ads or tracking

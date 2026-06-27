@@ -25,7 +25,7 @@ val releaseKeyAlias: String? = keystoreProperties["keyAlias"] as? String ?: Syst
 val releaseKeyPassword: String? = keystoreProperties["keyPassword"] as? String ?: System.getenv("KEY_PASSWORD")
 
 android {
-    namespace = "com.networkscanner.app"
+    namespace = "me.jo.netscan"
     compileSdk = 35
 
     dependenciesInfo {
@@ -36,7 +36,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.networkscanner.app"
+        applicationId = "me.jo.netscan"
         minSdk = 26
         targetSdk = 35
         versionCode = 9
